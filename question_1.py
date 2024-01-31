@@ -41,10 +41,9 @@ wait_pax_list = []
 
 # Body code
 while command not in command_list or command != 'exit': # Repeats body until exit command is given
+    
     print("What would you like to do?\n")
-
     command = input("Enter a command: ")
-    print("Entered command: " + command)
 
     if command == "addpassenger": # (COMPLETED) Add new passenger to passenger list
         print("Command - addpassenger\n")
@@ -57,11 +56,11 @@ while command not in command_list or command != 'exit': # Repeats body until exi
         name = passenger(name, pp_number, DOB, membership) # Create new passenger object based on passenger name
 
         if name.membership == 'G': # Checks and sorts passengers based on membership status
-            g_passenger_list.append(name.name)
+            g_passenger_list.append(name)
         elif name.membership == 'S':
-            s_passenger_list.append(name.name)
+            s_passenger_list.append(name)
         elif name.membership == 'N':
-            n_passenger_list.append(name.name)
+            n_passenger_list.append(name)
 
         passenger_list = g_passenger_list + s_passenger_list + n_passenger_list # Collates passengers into a master name list that arrange according to membership status
 
@@ -89,7 +88,7 @@ while command not in command_list or command != 'exit': # Repeats body until exi
 
         f_number = flight(f_number, cap, dep, arr, [], []) # Creates flight object based on flight number
 
-        flight_list.append(f_number.f_number) # Adds flight number to flight list
+        flight_list.append(f_number) # Adds flight number to flight list
 
         print("Flight successfully created!\n") # Feedback to check flight creation
         print("Flight number: " + f_number.f_number)
@@ -98,7 +97,7 @@ while command not in command_list or command != 'exit': # Repeats body until exi
         print("\nArrival: " + f_number.arr.date + ", " + f_number.arr.time + " at " + f_number.arr.loc)   
 
     elif command == "loadfile": # (COMPLETED) Loads passengers/flights from a .csv file
-        print("Command - loadpassengers\n")
+        print("Command - loadfile\n")
         # Entry types
         #
         # For passengers,
@@ -112,33 +111,25 @@ while command not in command_list or command != 'exit': # Repeats body until exi
         file = open(filename)
         reader = csv.reader(file) # Opens and reads file
 
+        print("Loading file data, please wait\n")
         for row in reader: # Cycles through data from csv row by row
             if row[0] == 'P': # Passenger type entry handler
-                print("Passenger entry received\n")
 
                 name = row[1] # Gets passenger details from elements of row
                 pp_number = row[2]
                 DOB = row[3]
                 membership = row[4]
 
-                name = passenger(name, pp_number, DOB, membership) # Creates passenger object based on passenger name
-                print("Passenger successfully loaded\n")
-                print("Name: " + name.name +
-                      "\nPassport number: " + name.pp_number +
-                      "\nDOB: " + name.DOB +
-                      "\nMembership: " + name.DOB + "\n")
+                name = passenger(name, pp_number, DOB, membership)
 
                 if name.membership == 'G': # Sorts passenger into memberships
-                    g_passenger_list.append(name.name)
+                    g_passenger_list.append(name)
                 elif name.membership == 'S':
-                    s_passenger_list.append(name.name)
+                    s_passenger_list.append(name)
                 elif name.membership == 'N':
-                    n_passenger_list.append(name.name)
-
-                passenger_list = g_passenger_list + s_passenger_list + n_passenger_list # Collates membership lists into a master name list
+                    n_passenger_list.append(name)
 
             elif row[0] == 'F': # Flight type entry handler
-                print("Flight entry received\n")
 
                 f_number = row[1] # Get flight details from elements of row
                 cap = row[2]
@@ -154,17 +145,22 @@ while command not in command_list or command != 'exit': # Repeats body until exi
 
                 f_number = flight(f_number, cap, dep, arr, [], []) # Creates flight object based on flight number
 
-                flight_list.append(f_number.f_number) # Adds flight number to flight list
+                flight_list.append(f_number) # Adds flight number to flight list
 
 
             else: # Unknown entry handler
                 print("Unrecognised entry, try again\n")
                 break; # Stops loop once unknown entry is detected
+        
+        passenger_list = g_passenger_list + s_passenger_list + n_passenger_list # Collates membership lists into a master name list
+        print("File data loaded\n")
 
     elif command == "flightlist": # (COMPLETED) View all flights
         print("Command - flightlist\n")
         
-        print(flight_list)
+        for i in range(len(flight_list)):
+            print(flight_list[i].f_number)
+        
         print("Total number of flights: " + str(len(flight_list)) + "\n")
 
     elif command == "checkflight": # (COMPLETED) Check all passenger details of a flight
@@ -172,33 +168,57 @@ while command not in command_list or command != 'exit': # Repeats body until exi
 
         f_number = input("Enter flight number: ")
 
-        conf_pax_list = f_number.conf_pax
-        wait_pax_list = f_number.wait_pax
+        for i in range(len(flight_list)):
+            if flight_list[i].f_number == f_number:
+                print("Flight found!\n")
+                f_number = flight_list[i]
 
-        for i in range(len(conf_pax_list)):
-            print("Number of confirmed passengers: " + len(conf_pax_list) + "\n")
-            print("Passenger number: " + str(i)+
-                  "\nName: " + conf_pax_list[i].name +
-                  "\nPassport number: " + conf_pax_list[i].pp_number +
-                  "\nDOB: " + conf_pax_list[i].DOB + 
-                  "\nMembership: " + conf_pax_list[i].membership + "\n")
+                print("Flight number: " + f_number.f_number +
+                      "\nCapacity: " + f_number.cap +
+                      "\nDeparture on " + f_number.dep.date + " at time " + f_number.dep.time + " from " + f_number.dep.loc +
+                      "\nArrival on " + f_number.arr.date + " at time " + f_number.arr.time + " from " + f_number.arr.loc + "\n")
+                
+                conf_pax_list = f_number.conf_pax
+                wait_pax_list = f_number.wait_pax
+
+                for i in range(len(conf_pax_list)):
+                    print("Number of confirmed passengers: " + len(conf_pax_list) + "\n")
+                    print("Passenger number: " + str(i)+
+                          "\nName: " + conf_pax_list[i].name +
+                          "\nPassport number: " + conf_pax_list[i].pp_number +
+                          "\nDOB: " + conf_pax_list[i].DOB + 
+                          "\nMembership: " + conf_pax_list[i].membership + "\n")
         
-        for j in range(len(wait_pax_list)):
-            print("Number of waiting passengers: " + len(wait_pax_list) + "\n")
-            print("Passenger number: " + str(i)+
-                  "\nName: " + wait_pax_list[i].name +
-                  "\nPassport number: " + wait_pax_list[i].pp_number +
-                  "\nDOB: " + wait_pax_list[i].DOB + 
-                  "\nMembership: " + wait_pax_list[i].membership + "\n")
+                for j in range(len(wait_pax_list)):
+                    print("Number of waiting passengers: " + len(wait_pax_list) + "\n")
+                    print("Passenger number: " + str(i)+
+                          "\nName: " + wait_pax_list[i].name +
+                          "\nPassport number: " + wait_pax_list[i].pp_number +
+                          "\nDOB: " + wait_pax_list[i].DOB + 
+                          "\nMembership: " + wait_pax_list[i].membership + "\n")
             
     elif command == "passengerlist": # (COMPLETED) View all passengers
         print("Command - passengerlist\n")
         
-        print(passenger_list)
+        for i in range(len(passenger_list)):
+            print(passenger_list[i].name)
         print("Total number of passengers: " + str(len(passenger_list)) + "\n")
 
-    elif command == "viewpassenger": # (WORK IN PROGRESS) View passenger details
+    elif command == "viewpassenger": # (COMPLETED) View passenger details
         print("Command - viewpassenger")
+
+        name = input("Enter passenger name: ")
+
+        for i in range(len(passenger_list)):
+            if passenger_list[i].name == name:
+                print("Passenger found!\n")
+                name = passenger_list[i]
+
+                print("Passenger name: " + name.name + 
+                      "\nPassport number: " + name.pp_number +
+                      "\nDOB: " + name.DOB + 
+                      "\nMembership: " + name.membership + "\n")
+                break                
 
     elif command == "flightrates": # (WORK IN PROGRESS) View flights with highest occupancies rates
         print("Command - flightrates\n")
