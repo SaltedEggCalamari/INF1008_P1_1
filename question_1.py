@@ -1,5 +1,6 @@
 # Imports
 import csv
+import passenger_flight_generator
 
 
 # Objects
@@ -25,7 +26,7 @@ class flight:
 
 
 # Data initialization
-command_list = ['addpassenger', 'addflight', 'loadfile', 'flightlist', 'passengerlist', 'flightrates', 'help', 'exit', '']
+command_list = ['addpassenger', 'addflight', 'loadfile', 'flightlist', 'passengerlist', 'flightrates', 'generatedata', 'help', 'exit', '']
 command = ''
 
 passenger_list = []
@@ -44,8 +45,11 @@ while command not in command_list or command != 'exit': # Repeats body until exi
       "--------------------------\n"+
       "addpassenger - To enter a new passengers details\n"+
       "addflight - To schedule a new flight\n"+
-      "flightlist - To display all passenger info of a flight\n"+
+      "loadfile - To load a csv file for data\n"+
+      "flightlist - To display all registered flights\n"+
+      "passengerlist - To display all registered passengers\n"+
       "flightrates - To check for flight occupancy rates\n"+
+      "generatedata - To generate data of n passengers and m flights\n"+
       "help - For list of commands\n"+
       "exit - To end program\n")
 
@@ -62,11 +66,11 @@ while command not in command_list or command != 'exit': # Repeats body until exi
 
         name = passenger(name, pp_number, DOB, membership) # Create new passenger object based on passenger name
 
-        if name.membership == 'gold': # Checks and sorts passengers based on membership status
+        if name.membership == 'G': # Checks and sorts passengers based on membership status
             g_passenger_list.append(name.name)
-        elif name.membership == 'silver':
+        elif name.membership == 'S':
             s_passenger_list.append(name.name)
-        elif name.membership == 'non':
+        elif name.membership == 'N':
             n_passenger_list.append(name.name)
 
         passenger_list = g_passenger_list + s_passenger_list + n_passenger_list # Collates passengers into a master name list that arrange according to membership status
@@ -134,11 +138,11 @@ while command not in command_list or command != 'exit': # Repeats body until exi
                       "\nDOB: " + name.DOB +
                       "\nMembership: " + name.DOB + "\n")
 
-                if name.membership == 'gold': # Sorts passenger into memberships
+                if name.membership == 'G': # Sorts passenger into memberships
                     g_passenger_list.append(name.name)
-                elif name.membership == 'silver':
+                elif name.membership == 'S':
                     s_passenger_list.append(name.name)
-                elif name.membership == 'non':
+                elif name.membership == 'N':
                     n_passenger_list.append(name.name)
 
                 passenger_list = g_passenger_list + s_passenger_list + n_passenger_list # Collates membership lists into a master name list
@@ -170,17 +174,25 @@ while command not in command_list or command != 'exit': # Repeats body until exi
     elif command == "flightlist": # (COMPLETED) View all flights
         print("Command - flightlist\n")
         
-        print("Total number of flights: " + str(len(flight_list)) + "\n")
         print(flight_list)
+        print("Total number of flights: " + str(len(flight_list)) + "\n")
 
     elif command == "passengerlist": # (COMPLETED) View all passengers
         print("Command - passengerlist\n")
         
-        print("Total number of passengers: " + str(len(passenger_list)) + "\n")
         print(passenger_list)
+        print("Total number of passengers: " + str(len(passenger_list)) + "\n")
 
     elif command == "flightrates": # (WORK IN PROGRESS) View flights with highest occupancies rates
         print("Command - flightrates\n")
+
+    elif command == "generatedata": # (COMPLETED) Generates a csv file for n number of passengers and m number of flights
+        print("Command - generatedata")
+
+        n = input("Enter number of passengers to generate: ")
+        m = input("Enter number of flights to generate: ")
+
+        passenger_flight_generator.gen_passenger_flight(n, m)
 
     elif command == "help": # (WORK IN PROGRESS) Normal Help function
         print("Command - help\n")
