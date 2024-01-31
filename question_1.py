@@ -26,7 +26,7 @@ class flight:
 
 
 # Data initialization
-command_list = ['addpassenger', 'addflight', 'loadfile', 'flightlist', 'passengerlist', 'flightrates', 'generatedata', 'help', 'exit', '']
+command_list = ['addpassenger', 'addflight', 'loadfile', 'flightlist', 'checkflight', 'passengerlist', 'viewpassenger', 'flightrates', 'generatedata', 'assignpassengers', 'help', 'exit', '']
 command = ''
 
 passenger_list = []
@@ -41,17 +41,7 @@ wait_pax_list = []
 
 # Body code
 while command not in command_list or command != 'exit': # Repeats body until exit command is given
-    print("What would you like to do?\n"+
-      "--------------------------\n"+
-      "addpassenger - To enter a new passengers details\n"+
-      "addflight - To schedule a new flight\n"+
-      "loadfile - To load a csv file for data\n"+
-      "flightlist - To display all registered flights\n"+
-      "passengerlist - To display all registered passengers\n"+
-      "flightrates - To check for flight occupancy rates\n"+
-      "generatedata - To generate data of n passengers and m flights\n"+
-      "help - For list of commands\n"+
-      "exit - To end program\n")
+    print("What would you like to do?\n")
 
     command = input("Enter a command: ")
     print("Entered command: " + command)
@@ -107,7 +97,7 @@ while command not in command_list or command != 'exit': # Repeats body until exi
         print("\nDeparting: " + f_number.dep.date + ", " + f_number.dep.time + " from " + f_number.dep.loc)
         print("\nArrival: " + f_number.arr.date + ", " + f_number.arr.time + " at " + f_number.arr.loc)   
 
-    elif command == "loadfile": # (WORK IN PROGRESS) Loads passengers/flights from a .csv file
+    elif command == "loadfile": # (COMPLETED) Loads passengers/flights from a .csv file
         print("Command - loadpassengers\n")
         # Entry types
         #
@@ -177,11 +167,38 @@ while command not in command_list or command != 'exit': # Repeats body until exi
         print(flight_list)
         print("Total number of flights: " + str(len(flight_list)) + "\n")
 
+    elif command == "checkflight": # (COMPLETED) Check all passenger details of a flight
+        print("Command - checkflight")
+
+        f_number = input("Enter flight number: ")
+
+        conf_pax_list = f_number.conf_pax
+        wait_pax_list = f_number.wait_pax
+
+        for i in range(len(conf_pax_list)):
+            print("Number of confirmed passengers: " + len(conf_pax_list) + "\n")
+            print("Passenger number: " + str(i)+
+                  "\nName: " + conf_pax_list[i].name +
+                  "\nPassport number: " + conf_pax_list[i].pp_number +
+                  "\nDOB: " + conf_pax_list[i].DOB + 
+                  "\nMembership: " + conf_pax_list[i].membership + "\n")
+        
+        for j in range(len(wait_pax_list)):
+            print("Number of waiting passengers: " + len(wait_pax_list) + "\n")
+            print("Passenger number: " + str(i)+
+                  "\nName: " + wait_pax_list[i].name +
+                  "\nPassport number: " + wait_pax_list[i].pp_number +
+                  "\nDOB: " + wait_pax_list[i].DOB + 
+                  "\nMembership: " + wait_pax_list[i].membership + "\n")
+            
     elif command == "passengerlist": # (COMPLETED) View all passengers
         print("Command - passengerlist\n")
         
         print(passenger_list)
         print("Total number of passengers: " + str(len(passenger_list)) + "\n")
+
+    elif command == "viewpassenger": # (WORK IN PROGRESS) View passenger details
+        print("Command - viewpassenger")
 
     elif command == "flightrates": # (WORK IN PROGRESS) View flights with highest occupancies rates
         print("Command - flightrates\n")
@@ -194,10 +211,25 @@ while command not in command_list or command != 'exit': # Repeats body until exi
 
         passenger_flight_generator.gen_passenger_flight(n, m)
 
+    elif command == "assignpassengers": # (WORK IN PROGRESS) Runs algorithm to sort and assign passengers their seats
+        print("Command - assignpassengers")
+
     elif command == "help": # (WORK IN PROGRESS) Normal Help function
         print("Command - help\n")
+        print("addpassenger - To enter a new passengers details\n"+
+              "addflight - To schedule a new flight\n"+
+              "loadfile - To load a csv file for data\n"+
+              "flightlist - To display all registered flights\n"+
+              "checkflight - View all passenger details of a flight\n"+
+              "passengerlist - To display all registered passengers\n"+
+              "viewpassenger - View passenger details\n"+
+              "flightrates - To check for flight occupancy rates\n"+
+              "generatedata - To generate data of n passengers and m flights\n"+
+              "assignpassengers - Assign passengers seats\n"+
+              "help - For list of commands\n"+
+              "exit - To end program\n")
 
-    elif command == "exit": # (COMPLETED) Cease program function
+    elif command == "exit": # (COMPLETED) Exits program
         print("Command - exit\n")
 
         exit_confirm = input("To confirm you wish to exit, enter \"CONFIRM\": ") # Confirms users request to exit program
@@ -207,6 +239,6 @@ while command not in command_list or command != 'exit': # Repeats body until exi
     elif command not in command_list: # Loop to start sequence
         print("Command not recognised. Please enter a recognised command.\n")
 
-    # (WORK IN PROGRESS) Algorithms go here
+    
                 
 
