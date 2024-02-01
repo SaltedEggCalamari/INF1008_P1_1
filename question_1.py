@@ -258,7 +258,3 @@ while command not in command_list or command != 'exit': # Repeats body until exi
 
     elif command not in command_list: # Loop to start sequence
         print("Command not recognised. Please enter a recognised command.\n")
-
-    
-                
-
