@@ -5,7 +5,6 @@ A. Features to add:
         - Thereby cutting number of iterations from n to n/4
 2. Design and implement algorithm to assign passengers
     - 2 algorithms to improve experiment results
-3. 
 
 
 B. Assumptions made:
