@@ -40,7 +40,7 @@ wait_pax_list = []
 
 
 # Body code
-while command not in command_list or command != 'exit': # Repeats body until exit command is given
+while command != 'exit': # Repeats body until exit command is given
     
     print("What would you like to do?\n")
     command = input("Enter a command: ")
@@ -155,7 +155,7 @@ while command not in command_list or command != 'exit': # Repeats body until exi
         passenger_list = g_passenger_list + s_passenger_list + n_passenger_list # Collates membership lists into a master name list
         print("File data loaded\n")
 
-    elif command == "flightlist": # (COMPLETED) View all flights
+    elif command == "flightlist": # (WORK IN PROGRESS) View all flights
         print("Command - flightlist\n")
         
         for i in range(len(flight_list)):
@@ -181,23 +181,26 @@ while command not in command_list or command != 'exit': # Repeats body until exi
                 conf_pax_list = f_number.conf_pax
                 wait_pax_list = f_number.wait_pax
 
+                print("Confirmed passengers: \n")
                 for i in range(len(conf_pax_list)):
-                    print("Number of confirmed passengers: " + len(conf_pax_list) + "\n")
-                    print("Passenger number: " + str(i)+
+                    print("Passenger number: " + str(i+1)+
                           "\nName: " + conf_pax_list[i].name +
                           "\nPassport number: " + conf_pax_list[i].pp_number +
                           "\nDOB: " + conf_pax_list[i].DOB + 
                           "\nMembership: " + conf_pax_list[i].membership + "\n")
         
+                print("Waiting passengers: \n")
                 for j in range(len(wait_pax_list)):
-                    print("Number of waiting passengers: " + len(wait_pax_list) + "\n")
-                    print("Passenger number: " + str(i)+
-                          "\nName: " + wait_pax_list[i].name +
-                          "\nPassport number: " + wait_pax_list[i].pp_number +
-                          "\nDOB: " + wait_pax_list[i].DOB + 
-                          "\nMembership: " + wait_pax_list[i].membership + "\n")
+                    print("Passenger number: " + str(j+1)+
+                          "\nName: " + wait_pax_list[j].name +
+                          "\nPassport number: " + wait_pax_list[j].pp_number +
+                          "\nDOB: " + wait_pax_list[j].DOB + 
+                          "\nMembership: " + wait_pax_list[j].membership + "\n")
+                
+                print("Number of confirmed passengers: " + str(len(conf_pax_list)) + "\n")
+                print("Number of waiting passengers: " + str(len(wait_pax_list)) + "\n")
             
-    elif command == "passengerlist": # (COMPLETED) View all passengers
+    elif command == "passengerlist": # (WORK IN PROGRESS) View all passengers
         print("Command - passengerlist\n")
         
         for i in range(len(passenger_list)):
@@ -234,6 +237,44 @@ while command not in command_list or command != 'exit': # Repeats body until exi
     elif command == "assignpassengers": # (WORK IN PROGRESS) Runs algorithm to sort and assign passengers their seats
         print("Command - assignpassengers")
 
+        # Algorithm design 1: Merge, assign, divide
+
+        all_cap = 0
+        wait_sample = 0
+
+        for i in range(len(flight_list)):
+            all_cap += int(flight_list[i].cap)
+
+        if len(passenger_list) > all_cap:
+            print("More passengers than capacity\n")
+            conf_pax_list = passenger_list[0:all_cap]
+            wait_pax_list = passenger_list[all_cap::]
+            wait_sample = int(len(wait_pax_list) / len(flight_list))
+
+        elif len(passenger_list) <= all_cap:
+            print("Enough capacity for all passengers\n")
+            conf_pax_list = passenger_list[0:all_cap]
+
+
+        flight_list[0].conf_pax = conf_pax_list[0:int(flight_list[0].cap)]
+        if wait_sample != 0:
+            flight_list[0].wait_pax = wait_pax_list[0:wait_sample]
+
+        j = 1
+        prev_cap = int(flight_list[0].cap)
+        while j < len(flight_list):
+            curr_cap = prev_cap + int(flight_list[j].cap)
+
+            flight_list[j].conf_pax = conf_pax_list[prev_cap:curr_cap]
+
+            if wait_sample != 0:
+                flight_list[j].wait_pax = wait_pax_list[j * wait_sample: (j+1) * wait_sample]
+
+            j += 1
+            prev_cap = curr_cap
+
+        print("Passengers assigned!\n")
+
     elif command == "help": # (WORK IN PROGRESS) Normal Help function
         print("Command - help\n")
         print("addpassenger - To enter a new passengers details\n"+
@@ -258,3 +299,7 @@ while command not in command_list or command != 'exit': # Repeats body until exi
 
     elif command not in command_list: # Loop to start sequence
         print("Command not recognised. Please enter a recognised command.\n")
+
+    
+                
+
