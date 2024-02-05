@@ -242,24 +242,28 @@ while command != 'exit': # Repeats body until exit command is given
         all_cap = 0
         wait_sample = 0
 
-        for i in range(len(flight_list)):
+        for i in range(len(flight_list)): # Obtain total capacity of all flights
             all_cap += int(flight_list[i].cap)
 
-        if len(passenger_list) > all_cap:
+        if len(passenger_list) > all_cap: # More passengers than capacity handler
             print("More passengers than capacity\n")
-            conf_pax_list = passenger_list[0:all_cap]
-            wait_pax_list = passenger_list[all_cap::]
-            wait_sample = int(len(wait_pax_list) / len(flight_list))
+            conf_pax_list = passenger_list[0:all_cap] # Confirmed pax up to capacity
+            wait_pax_list = passenger_list[all_cap::] # Waiting pax from capacity to end of list
+            wait_sample = int(len(wait_pax_list) / len(flight_list)) # Number of waiting pax per flight
 
-        elif len(passenger_list) <= all_cap:
+        elif len(passenger_list) <= all_cap: # More capacity than passengers handler
             print("Enough capacity for all passengers\n")
             conf_pax_list = passenger_list[0:all_cap]
 
-
-        flight_list[0].conf_pax = conf_pax_list[0:int(flight_list[0].cap)]
+        flight_list[0].conf_pax = conf_pax_list[0:int(flight_list[0].cap)] # Assigns confirmed pax for first flight
         if wait_sample != 0:
-            flight_list[0].wait_pax = wait_pax_list[0:wait_sample]
+            flight_list[0].wait_pax = wait_pax_list[0:wait_sample] # Assigns wait pax for first flight
 
+        # Loop that assigns passengers from the head of the list into the flight uses previous cap and current cap as limits
+        # e.g. flight 1 - 10 pax cap, flight 2 - 20 pax cap, flight 3 - 30 pax cap
+        # flight 1 confirmed pax from 0 to 10 (prev cap = 0, current cap = 0 + 10)
+        # flight 2 confirmed pax from 11 to 30 (prev cap = 10, current cap = 10 + 20)
+        # flight 3 confirmed pax from 31 to 60 (prev cap = 10 + 20, current cap = 10 + 20 + 30)
         j = 1
         prev_cap = int(flight_list[0].cap)
         while j < len(flight_list):
@@ -269,7 +273,7 @@ while command != 'exit': # Repeats body until exit command is given
 
             if wait_sample != 0:
                 flight_list[j].wait_pax = wait_pax_list[j * wait_sample: (j+1) * wait_sample]
-
+                
             j += 1
             prev_cap = curr_cap
 
